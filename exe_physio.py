@@ -57,7 +57,14 @@ if args.modelfolder == "":
         valid_loader=valid_loader,
         foldername=foldername,
     )
+## buvo else blocke: model.load_state_dict(torch.load("./save/" + args.modelfolder + "/model.pth")), pakeiciau, nes AI liepe :)
 else:
-    model.load_state_dict(torch.load("./save/" + args.modelfolder + "/model.pth"))
+  model.load_state_dict(
+      torch.load(
+          "./save/" + args.modelfolder + "/model.pth",
+          map_location=args.device, ## loads checkpoint tensors onto my selected device (mps/cpu) rather than CUDA device
+          weights_only=True, ## uses restricted loading mode, good for model state dictionary
+      )
+  )
 
 evaluate(model, test_loader, nsample=args.nsample, scaler=1, foldername=foldername)
